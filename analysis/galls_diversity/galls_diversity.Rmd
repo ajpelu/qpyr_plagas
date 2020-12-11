@@ -1,0 +1,89 @@
+---
+title: "Diversity of Galls oak and oak pests in oak woodlands of Sierra Nevada "
+output:
+  rmdformats::html_clean:
+    highlight: kate
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+
+```{r}
+library("tidyverse")
+library("here")
+library("mapview")
+library("DT")
+library("taxize")
+```
+
+
+```{r, eval=FALSE}
+#library(readODS)
+#plagas <- readODS::read_ods("/Users/ajpelu/Desktop/DATA_ADAPTAMED_PLAGAS/defoliadores_diversidad.ods")
+#write_csv(plagas, here::here("data/defoliadores_diversidad.csv"))
+
+plagas <- read_csv(here::here("data/defoliadores_diversidad.csv"))
+diversidad_plagas <- plagas %>% dplyr::select(TAXON) %>% unique()
+
+lista_taxa <- diversidad_plagas %>% filter(!(TAXON %in% c("Tortricidae", "Valor nulo", "Dryobotodes","Andricus", "Cynipidae", "Neuroterus")))
+
+reclass <- classification(lista_taxa$TAXON, db = 'gbif')
+reclass <- rbind(reclass)
+
+clasifica <- reclass %>% 
+  filter(rank %in% c("phylum","class", "order", "family")) %>% 
+  dplyr::select(TAXON=query, name, rank) %>% 
+  pivot_wider(names_from = rank, values_from = name)
+
+ids <-  reclass %>% 
+  filter(rank == "species") %>% 
+  dplyr::select(TAXON=query, species = name, id)
+
+clasifica <- clasifica %>% inner_join(ids) %>% 
+  mutate(url = paste0("https://www.gbif.org/species/", id), 
+         url_gallery = paste0("https://www.gbif.org/occurrence/gallery?taxon_key=", id))
+
+
+taxonomia_plagas <- clasifica %>% 
+  mutate(urlT = ifelse(is.na(url), NA, paste0("<a href=", url, ' target="_blank">Link</a>')),
+         gbif_gallery = ifelse(is.na(url_gallery), NA, paste0("<a href=", url_gallery, ' target="_blank">Link</a>'))) 
+
+# write_csv(taxonomia_plagas, here::here("data/species_plagas.csv"))
+```
+
+```{r}
+taxonomia_plagas <- read_csv(here::here("data/species_plagas.csv"))
+```
+
+```{r}
+tp <- taxonomia_plagas %>% 
+  dplyr::select(species, phylum, class, order, family, gbifid = id, url = urlT, gallery = gbif_gallery)
+
+datatable(tp, filter = 'top', 
+          extensions = 'Buttons', 
+          escape = FALSE,
+          options = list(pageLength = 50, 
+                         autoWidth = TRUE,
+                         dom = 'Bfrtip',
+                         buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+                         )
+)
+```
+
+
