@@ -3,7 +3,7 @@
 This repo contains information about the oak galls and forest pests found in several oak woodlands of Sierra Nevada. Data comes from [Sierra Nevada Global Change Observatory](https://obsnev.es/) and from [LIFE-ADAPTAMED project](ttps://www.lifeadaptamed.eu/).  
 
 
-This table shows the species found over a 10-year period of sampling in different oak forests of the Sierra Nevada. 
+This [table](https://raw.githack.com/ajpelu/qpyr_plagas/main/analysis/galls_diversity/galls_diversity.html) shows the species found over a 10-year period of sampling in different oak forests of the Sierra Nevada. 
 
 ## License 
 - Data: [Sierra Nevada Global Change Observatory](https://obsnev.es/);  [LIFE-ADAPTAMED project](ttps://www.lifeadaptamed.eu/)
