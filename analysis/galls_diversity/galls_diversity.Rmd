@@ -81,8 +81,7 @@ datatable(tp, filter = 'top',
           options = list(pageLength = 50, 
                          autoWidth = TRUE,
                          dom = 'Bfrtip',
-                         buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
-                         )
+                         buttons = c('copy', 'csv', 'excel', 'pdf', 'print'))
 )
 ```
 
